@@ -148,11 +148,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 	};
     })
 
-.directive('appHeader', function(){
+.directive('appHeader', function(LOGO_IMG){
         return {
             restrict: 'E',
             //I know, I know.
-            template: '<div style="padding-bottom: -100%; position: relative; text-align: center"><img src="img/logo.svg" style="width: 90%; height: auto;"> </div>'
+            template: '<div style="padding-bottom: -100%; position: relative; text-align: center"><img src="' +
+            LOGO_IMG + '" style="width: 90%; height: auto;"> </div>'
         }
     })
 
