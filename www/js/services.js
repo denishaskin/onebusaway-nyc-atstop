@@ -160,7 +160,8 @@ angular.module('starter.services', ['ionic', 'configuration'])
 	};
 })
 
-.factory('RouteService', function($filter, $q, $http, httpTimeout, API_END_POINT, API_KEY, DSCacheFactory) {
+.factory('RouteService', function($filter, $q, $http, httpTimeout, API_END_POINT, OBANYC_API_END_POINT, API_KEY, DSCacheFactory,
+	ApiService) {
 	DSCacheFactory('dataCache', {
 		maxAge: 600000,
 		cacheFlushInterval: 600000,
@@ -176,7 +177,7 @@ angular.module('starter.services', ['ionic', 'configuration'])
 			color: ""
 		};
 
-		var responsePromise = $http.jsonp(API_END_POINT + "api/where/stops-for-route/" + route + ".json?callback=JSON_CALLBACK", {
+		var responsePromise = $http.jsonp(ApiService.endPoint() + "api/where/stops-for-route/" + route + ".json?callback=JSON_CALLBACK", {
 			params: {
 				key: API_KEY,
 				version: 2,
@@ -213,7 +214,7 @@ angular.module('starter.services', ['ionic', 'configuration'])
 		var deferred = $q.defer();
 		var directions = {};
 
-		var responsePromise = $http.jsonp(API_END_POINT + "api/where/stops-for-route/" + route + ".json?callback=JSON_CALLBACK", {
+		var responsePromise = $http.jsonp(ApiService.endPoint() + "api/where/stops-for-route/" + route + ".json?callback=JSON_CALLBACK", {
 			cache: DSCacheFactory.get('dataCache'),
 			params: {
 				key: API_KEY,
@@ -301,7 +302,7 @@ angular.module('starter.services', ['ionic', 'configuration'])
 	};
 })
 
-.factory('GeolocationService', function($q, $http, httpTimeout, API_END_POINT, API_KEY) {
+.factory('GeolocationService', function($q, $http, httpTimeout, API_END_POINT, API_KEY, ApiService) {
 
 	var promiseCurrentPosition = function(geolocationOptions) {
 		var deferred = $q.defer();
@@ -321,7 +322,7 @@ angular.module('starter.services', ['ionic', 'configuration'])
 		var deferred = $q.defer();
 		var routes = {};
 
-		var responsePromise = $http.jsonp(API_END_POINT + "api/where/routes-for-location.json?callback=JSON_CALLBACK", {
+		var responsePromise = $http.jsonp(ApiService.endPoint() + "api/where/routes-for-location.json?callback=JSON_CALLBACK", {
 			params: {
 				key: API_KEY,
 				lat: lat,
@@ -349,7 +350,7 @@ angular.module('starter.services', ['ionic', 'configuration'])
 		var deferred = $q.defer();
 		var stops = {};
 
-		var responsePromise = $http.jsonp(API_END_POINT + "api/where/stops-for-location.json?callback=JSON_CALLBACK", {
+		var responsePromise = $http.jsonp(ApiService.endPoint() + "api/where/stops-for-location.json?callback=JSON_CALLBACK", {
 			params: {
 				key: API_KEY,
 				lat: lat,
@@ -469,12 +470,12 @@ angular.module('starter.services', ['ionic', 'configuration'])
 	};
 })
 
-.factory('StopcodeService', function($q, $http, httpTimeout, API_END_POINT, API_KEY) {
+.factory('StopcodeService', function($q, $http, httpTimeout, API_END_POINT, API_KEY, ApiService) {
 	var getRoutes = function(stop) {
 		var deferred = $q.defer();
 		var routes = {};
 
-		var responsePromise = $http.jsonp(API_END_POINT + "api/where/stop/" + stop + ".json?callback=JSON_CALLBACK", {
+		var responsePromise = $http.jsonp(ApiService.endPoint() + "api/where/stop/" + stop + ".json?callback=JSON_CALLBACK", {
 			params: {
 				key: API_KEY
 			},
@@ -500,7 +501,7 @@ angular.module('starter.services', ['ionic', 'configuration'])
 		var deferred = $q.defer();
 		var coordinates = {};
 
-		var responsePromise = $http.jsonp(API_END_POINT + "api/where/stop/" + stop + ".json?callback=JSON_CALLBACK", {
+		var responsePromise = $http.jsonp(ApiService.endPoint() + "api/where/stop/" + stop + ".json?callback=JSON_CALLBACK", {
 			params: {
 				key: API_KEY
 			},
@@ -789,5 +790,19 @@ angular.module('starter.services', ['ionic', 'configuration'])
 		getRoutePolylines: getRoutePolylines,
 		getStopMarkers: getStopMarkers,
 		getBusMarkers: getBusMarkers
+	};
+})
+
+.factory('ApiService', function(API_END_POINT, OBANYC_API_END_POINT) {
+
+	return {
+		endPoint: function() {
+			if (OBANYC_API_END_POINT != '') {
+				return OBANYC_API_END_POINT;
+			} else {
+				return API_END_POINT;			
+			}
+		}
+
 	};
 });
